@@ -121,7 +121,7 @@ impl<'root, T: ?Sized, U> MutRefStackWithData<'root, T, U> {
         (self.top_mut(), items)
     }
 
-    /// Ascend from, descend from, inject above, or stay at the current node,
+    /// Ascend from, descend from, inject a new top, or stay at the current node,
     /// based on the return value of the closure.
     pub fn move_with(
         &mut self,

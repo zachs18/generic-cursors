@@ -78,15 +78,10 @@ impl<'root, T: ?Sized> MutRefStack<'root, T> {
         &mut self,
         f: impl for<'node> FnOnce(&'node mut T) -> Option<&'node mut T>,
     ) -> Option<&mut T> {
-        let ptr: *mut T = self.raw_top();
-        let ptr: Option<&mut T> = unsafe { f(&mut *ptr) };
-        match ptr {
-            Some(ptr) => {
-                self.data.push(ptr);
-                Some(ptr)
-            }
-            None => None,
-        }
+        let old_top: *mut T = self.raw_top();
+        let new_top: &mut T = unsafe { f(&mut *old_top)? };
+        self.data.push(new_top);
+        Some(new_top)
     }
 
     /// Ascend back up from the recursive data structure, returning a mutable reference to the new top element, if it changed.
@@ -118,7 +113,7 @@ impl<'root, T: ?Sized> MutRefStack<'root, T> {
         self.top_mut()
     }
 
-    /// Ascend from, descend from, inject above, or stay at the current node,
+    /// Ascend from, descend from, inject a new stack top, or stay at the current node,
     /// based on the return value of the closure.
     pub fn move_with<F>(&mut self, f: F) -> Result<&mut T, MoveError>
     where
