@@ -1,6 +1,6 @@
 [package]
 name = "generic-cursors"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Zachary S"]
 edition = "2021"
 description = "A generic way to mutably traverse acyclic recursive data structures."
